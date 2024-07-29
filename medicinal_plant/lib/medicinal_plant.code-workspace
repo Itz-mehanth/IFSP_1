@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../medicinal plant identifier/medicinal_plant_app/assets"
+		},
+		{
+			"path": "../../../medicinal plant identifier/medicinal_plant_app/lib"
+		}
+	],
+	"settings": {}
+}
