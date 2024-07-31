@@ -286,247 +286,251 @@ class _PlantBoxWidgetState extends State<PlantBoxWidget>
     }
   }
 
- @override
-Widget build(BuildContext context) {
-  String truncatedPlantDescription = widget.plantDescription.length > 176
-      ? widget.plantDescription.substring(0, 176)
-      : widget.plantDescription;
+  @override
+  Widget build(BuildContext context) {
+    String truncatedPlantDescription = widget.plantDescription.length > 176
+        ? widget.plantDescription.substring(0, 176)
+        : widget.plantDescription;
 
-  return Container(
-    height: 142,
-    width: 370,
-    padding: const EdgeInsets.all(5),
-    child: Row(
-      children: [
-        FutureBuilder(
-          future: widget.imageUrl,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const SizedBox(
-                height: 142,
-                width: 134,
-                child: Center(child: CircularProgressIndicator()),
-              );
-            } else if (snapshot.connectionState == ConnectionState.done) {
-              return Stack(
-                children: [
-                  Container(
-                    width: 134,
-                    height: 142,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10),
-                      ),
-                      border: Border.all(color: Colors.black12),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10),
-                      ),
-                      child: CachedNetworkImage(
-                        imageUrl: snapshot.data!,
-                        placeholder: (context, url) => const SizedBox(
-                          height: 142,
-                          width: 134,
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
-                        errorWidget: (context, url, error) {
-                          print('Error loading image: $error');
-                          return const Icon(Icons.error);
-                        },
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    child: Container(
-                      width: 28,
-                      height: 28,
-                      alignment: Alignment.center,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
+    return Container(
+      height: 142,
+      width: 370,
+      padding: const EdgeInsets.all(5),
+      child: Row(
+        children: [
+          FutureBuilder(
+            future: widget.imageUrl,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const SizedBox(
+                  height: 142,
+                  width: 134,
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              } else if (snapshot.connectionState == ConnectionState.done) {
+                return Stack(
+                  children: [
+                    Container(
+                      width: 134,
+                      height: 142,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10),
+                          bottomLeft: Radius.circular(10),
+                        ),
+                        border: Border.all(color: Colors.black12),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          bottomLeft: Radius.circular(10),
+                        ),
+                        child: CachedNetworkImage(
+                          imageUrl: snapshot.data!,
+                          placeholder: (context, url) => const SizedBox(
+                            height: 142,
+                            width: 134,
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+                          errorWidget: (context, url, error) {
+                            print('Error loading image: $error');
+                            return const Icon(Icons.error);
+                          },
+                          fit: BoxFit.fill,
                         ),
                       ),
-                      child: AnimatedBuilder(
-                        animation: controller,
-                        builder: (context, child) {
-                          return Transform.scale(
-                            scale: sizeAnimation.value,
-                            child: IconButton(
-                              padding: const EdgeInsets.all(2),
-                              icon: const Icon(Icons.star_sharp),
-                              color: colorAnimation.value,
-                              iconSize: 24,
-                              onPressed: () async {
-                                final userId = FirebaseAuth.instance.currentUser!.uid;
-
-                                User? user = FirebaseAuth.instance.currentUser;
-
-                                final favorites = FirebaseFirestore.instance.collection('users');
-                                if (user != null) {
-                                  if (widget.isFav) {
-                                    // Remove plant from favorites
-                                    favorites.doc(userId).update({
-                                      'favorites': FieldValue.arrayRemove([widget.plantName])
-                                    });
-                                    controller.reverse();
-                                  } else {
-                                    // Add plant to favorites
-                                    favorites.doc(userId).update({
-                                      'favorites': FieldValue.arrayUnion([widget.plantName])
-                                    });
-                                    controller.forward();
-                                  }
-                                  setState(() {
-                                    widget.isFav = !widget.isFav;
-                                  });
-                                } else {
-                                  showErrorDialog('Login required');
-                                }
-                              },
-                            ),
-                          );
-                        },
-                      ),
                     ),
-                  ),
-                ],
-              );
-            } else {
-              return const SizedBox(
-                height: 142,
-                width: 134,
-                child: Icon(Icons.error),
-              );
-            }
-          },
-        ),
-        Expanded(
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PlantDetailsPage(
-                    plantName: widget.plantName,
-                    plantDescription: widget.plantDescription,
-                    scientificName: widget.scientificName,
-                    family: widget.family,
-                  ),
-                ),
-              );
-            },
-            child: Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
-                ),
-                color: Colors.white,
-                border: Border(
-                  top: BorderSide(color: Colors.black12),
-                  right: BorderSide(color: Colors.black12),
-                  bottom: BorderSide(color: Colors.black12),
-                ),
-              ),
-              height: 140,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(
-                        left: 5, right: 5, top: 2, bottom: 2),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TranslatedText(
-                          widget.plantName,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'KOULEN',
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      child: Container(
+                        width: 28,
+                        height: 28,
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            bottomRight: Radius.circular(10),
                           ),
                         ),
-                        SizedBox(
-                          height: 70,
-                          child: TranslatedText(
-                            "$truncatedPlantDescription ... Read more",
-                            style: const TextStyle(
-                              fontSize: 10,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(
-                        left: 10, right: 10, top: 2, bottom: 1),
-                    decoration: const BoxDecoration(
-                      border: Border(top: BorderSide(color: Colors.black12)),
-                    ),
-                    height: 33,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  const Icon(
-                                    color: Colors.green,
-                                    Icons.medical_information,
-                                    size: 16,
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Flexible(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const TranslatedText(
-                                          "Scientific name",
-                                          style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        TranslatedText(
-                                          widget.scientificName,
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            overflow: TextOverflow.ellipsis, // Add this line
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                        child: AnimatedBuilder(
+                          animation: controller,
+                          builder: (context, child) {
+                            return Transform.scale(
+                              scale: sizeAnimation.value,
+                              child: IconButton(
+                                padding: const EdgeInsets.all(2),
+                                icon: Icon(Icons.star_sharp,
+                                    color: !widget.isFav
+                                        ? Colors.black54
+                                        : const Color.fromARGB(
+                                            255, 255, 191, 0)),
+                                color: colorAnimation.value,
+                                iconSize: 24,
+                                onPressed: (FirebaseAuth.instance.currentUser != null) ?
+                                 () async {
+                                  final userId = FirebaseAuth.instance.currentUser!.uid;
+
+                                  final favorites = FirebaseFirestore.instance
+                                      .collection('users');
+                                    if (widget.isFav) {
+                                      // Remove plant from favorites
+                                      favorites.doc(userId).update({
+                                        'favorites': FieldValue.arrayRemove(
+                                            [widget.plantName])
+                                      });
+                                      controller.reverse();
+                                    } else {
+                                      // Add plant to favorites
+                                      favorites.doc(userId).update({
+                                        'favorites': FieldValue.arrayUnion(
+                                            [widget.plantName])
+                                      });
+                                      controller.forward();
+                                    }
+                                    setState(() {
+                                      widget.isFav = !widget.isFav;
+                                    });
+                                } :
+                                () => showLoginPrompt(context)
                               ),
-                            ],
-                          ),
+                            );
+                          },
                         ),
-                      ],
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return const SizedBox(
+                  height: 142,
+                  width: 134,
+                  child: Icon(Icons.error),
+                );
+              }
+            },
+          ),
+          Expanded(
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PlantDetailsPage(
+                      plantName: widget.plantName,
+                      plantDescription: widget.plantDescription,
+                      scientificName: widget.scientificName,
+                      family: widget.family,
                     ),
                   ),
-                ],
+                );
+              },
+              child: Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                  ),
+                  color: Colors.white,
+                  border: Border(
+                    top: BorderSide(color: Colors.black12),
+                    right: BorderSide(color: Colors.black12),
+                    bottom: BorderSide(color: Colors.black12),
+                  ),
+                ),
+                height: 140,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.only(
+                          left: 5, right: 5, top: 2, bottom: 2),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TranslatedText(
+                            widget.plantName,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'KOULEN',
+                            ),
+                          ),
+                          SizedBox(
+                            height: 70,
+                            child: TranslatedText(
+                              "$truncatedPlantDescription ... Read more",
+                              style: const TextStyle(
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(
+                          left: 10, right: 10, top: 2, bottom: 1),
+                      decoration: const BoxDecoration(
+                        border: Border(top: BorderSide(color: Colors.black12)),
+                      ),
+                      height: 33,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      color: Colors.green,
+                                      Icons.medical_information,
+                                      size: 16,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const TranslatedText(
+                                            "Scientific name",
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          TranslatedText(
+                                            widget.scientificName,
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              overflow: TextOverflow
+                                                  .ellipsis, // Add this line
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
-}
-
 
 List<PlantBoxWidget> plantWidgets = [];
 
@@ -772,8 +776,12 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    
+    List<PlantBoxWidget> filteredWidgets;
     final plantWidgets = ref.watch(plantWidgetsProvider);
+    filteredWidgets = plantWidgets.where((widget) => widget.isFav).map((el) {
+      el.isFav = true;
+      return el;
+    }).toList();
 
     return Scaffold(
       body: Container(
@@ -803,7 +811,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
                           width: 55,
                           fit: BoxFit.fill,
                         ),
-                        const TranslatedText(
+                        const Text(
                           "MEDPLANT",
                           style: TextStyle(
                             color: Colors.black,
@@ -868,55 +876,92 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen>
             ),
             const Divider(thickness: 1),
             plantWidgets.length < 10
-                ? const Expanded(
-                    child: PlaceholderRedacted()
-                )
-                : Expanded(
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        // Calculate item width
-                        double itemWidth = 350;
+                ? (const Expanded(child: PlaceholderRedacted()))
+                : (allTabSelected
+                    ? Expanded(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            // Calculate item width
+                            double itemWidth = 350;
 
-                        // Define item height based on the aspect ratio
-                        double itemHeight =
-                            140; // This can be adjusted based on your design
-                        double aspectRatio = itemWidth / itemHeight;
+                            // Define item height based on the aspect ratio
+                            double itemHeight =
+                                140; // This can be adjusted based on your design
+                            double aspectRatio = itemWidth / itemHeight;
 
-                        // Calculate the number of columns based on available width
-                        int columnCount =
-                            (constraints.maxWidth / (itemWidth)).floor();
+                            // Calculate the number of columns based on available width
+                            int columnCount =
+                                (constraints.maxWidth / (itemWidth)).floor();
 
-                        return GridView.builder(
-                          padding: const EdgeInsets.all(10),
-                          shrinkWrap: true,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: columnCount, // Number of columns
-                            childAspectRatio:
-                                aspectRatio, // Maintain item aspect ratio
-                          ),
-                          itemCount: plantWidgets.length,
-                          itemBuilder: (context, index) {
-                            return Center(
-                              child: SizedBox(
-                                width: itemWidth,
-                                child: allTabSelected
-                                    ? plantWidgets[index]
-                                    : plantWidgets[index].isFav
-                                        ? plantWidgets[index]
-                                        : const SizedBox(
-                                            width: 0,
-                                          ),
+                            return GridView.builder(
+                              padding: const EdgeInsets.all(10),
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount:
+                                    columnCount, // Number of columns
+                                childAspectRatio:
+                                    aspectRatio, // Maintain item aspect ratio
                               ),
+                              itemCount: plantWidgets.length,
+                              itemBuilder: (context, index) {
+                                return Center(
+                                  child: SizedBox(
+                                      width: itemWidth,
+                                      child: plantWidgets[index]),
+                                );
+                              },
                             );
                           },
-                        );
-                      },
-                    ),
-                  )
+                        ),
+                      )
+                    : Expanded(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            // Calculate item width
+                            double itemWidth = 350;
+
+                            // Define item height based on the aspect ratio
+                            double itemHeight =
+                                140; // This can be adjusted based on your design
+                            double aspectRatio = itemWidth / itemHeight;
+
+                            // Calculate the number of columns based on available width
+                            int columnCount =
+                                (constraints.maxWidth / (itemWidth)).floor();
+
+                            return GridView.builder(
+                              padding: const EdgeInsets.all(10),
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount:
+                                    columnCount, // Number of columns
+                                childAspectRatio:
+                                    aspectRatio, // Maintain item aspect ratio
+                              ),
+                              itemCount: filteredWidgets.length,
+                              itemBuilder: (context, index) {
+                                return Center(
+                                  child: SizedBox(
+                                      width: itemWidth,
+                                      child: filteredWidgets[index]),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ))
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+    ref.invalidate(plantWidgetsProvider);
   }
 }

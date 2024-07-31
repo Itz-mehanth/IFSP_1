@@ -65,10 +65,15 @@ dependencies:
   intl: any
   simplytranslate: ^2.2.0
   url_launcher: ^6.0.20
+  flutter_app_restart: ^1.0.0
   shimmer: ^3.0.0
   flutter_riverpod: ^2.5.1
   provider: ^6.1.2
   redacted: ^1.0.12
+  google_sign_in_web: ^0.12.4+1
+  flutter_dotenv: ^5.0.0
+
+
 
 
 dev_dependencies:

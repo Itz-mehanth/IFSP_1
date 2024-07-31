@@ -8,6 +8,9 @@ final st = SimplyTranslator(EngineType.google);
 String currentLocale = "";
 
 Future<String> translate(String text) async {
+  if (currentLocale == "en") {
+    return text;
+  }
   String translatedText = text;
   int retries = 3;
 
@@ -38,7 +41,7 @@ Future<String> translate(String text) async {
 class TranslatedText extends StatelessWidget {
   final String text;
   final TextStyle? style;
-  const TranslatedText( this.text,{super.key,this.style});
+  const TranslatedText(this.text, {super.key, this.style});
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +51,10 @@ class TranslatedText extends StatelessWidget {
         if (snapshot.hasData) {
           return Text(snapshot.data!, style: style);
         } else {
-          return Text(text, style: style); // Display the original text while translating
+          return Text(text,
+              style: style); // Display the original text while translating
         }
       },
     );
   }
 }
-

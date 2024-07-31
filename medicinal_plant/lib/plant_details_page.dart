@@ -184,7 +184,6 @@ class _PlantDetailsPage extends State<PlantDetailsPage> {
           ),
           Container(
             padding: const EdgeInsets.all(5),
-            width: 200,
             height: 50,
             decoration: const BoxDecoration(color: Colors.white),
             child: ElevatedButton(
@@ -206,7 +205,7 @@ class _PlantDetailsPage extends State<PlantDetailsPage> {
                   SizedBox(width: 5), // Space between icon and text
                   TranslatedText(
                     'View in map',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.white, fontSize: 10),
                   ),
                 ],
               ),

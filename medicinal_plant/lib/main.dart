@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,18 +9,19 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:medicinal_plant/splash_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-Future<void> main() async {
 
+Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: const FirebaseOptions(
+    options: 
+     const FirebaseOptions(
       apiKey: "AIzaSyCrbOmzRVSMGhKGvjdI12fVUnSDfUGfWPY",
       projectId: "medicinal-plant-82aa9",
       messagingSenderId: "1085343678758",
       appId: "1:1085343678758:android:9a2029c33b8ed1017401e7",
-      // storageBucket: 'medicinal-plant-82aa9.appspot.com'
-    ),
+      storageBucket: 'medicinal-plant-82aa9.appspot.com'
+    ) 
   );
   
   runApp(
@@ -39,14 +42,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-
+    
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate
       ],
-
+    
       home: const SplashScreen(), // Start with the SplashScreen
     );
   }

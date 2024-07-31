@@ -1,21 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:medicinal_plant/auth.dart';
+import 'package:medicinal_plant/google_signin.dart';
+import 'package:medicinal_plant/google_signin_web.dart';
 import 'package:medicinal_plant/home_page.dart';
 import 'package:medicinal_plant/login_register_page.dart';
+import 'package:flutter_app_restart/flutter_app_restart.dart';
 import 'package:medicinal_plant/utils/global_functions.dart';
-import 'package:medicinal_plant/widget_tree.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ProfilePage extends StatefulWidget {
+class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends ConsumerState<ProfilePage> {
   User? user;
   @override
   void initState() {
@@ -160,16 +163,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     value: index,
                     // groupValue: locales.indexOf(currentLocale),
                     groupValue: locales.indexOf(currentLocale),
-                    onChanged: (int? value) {
+                    onChanged: (int? value) async {
                       setState(() {
                         _selectedOption = value!;
                       });
                       _updateUserLanguage(locales[_selectedOption]);
                       Navigator.pop(context);
-                      Navigator.push(
-                        context, 
-                        MaterialPageRoute(builder: (context) => const WidgetTree())
-                      );
+                      await FlutterRestart.restartApp();
                     },
                   );
                 }).toList(),
@@ -196,6 +196,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final AuthService authService = AuthService();
     return Scaffold(
       body: Container(
         color: Colors.white,
@@ -248,6 +249,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 onPressed: () {
                   if (user?.email != null) {
                     auth.signOut();
+                  }else if(authService.isLoggedIn) {
+                    authService.signOut();
                   } else {
                     Navigator.push(
                       context,
@@ -283,7 +286,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 child: Row(
                   children: [
-                    const SizedBox(width: 10,),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     Icon(
                       user?.email != null ? Icons.logout : Icons.login,
                       size: 20,
@@ -294,20 +299,16 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(
                       width: 10,
                     ),
-                    user?.email != null ?
-                    const TranslatedText(
-                       "Log out",
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 255, 17, 0)
-                      )) :
-                    TranslatedText(
-                      user?.email != null ? "Log out" : "Log in",
-                      style: TextStyle(
-                        color: user?.email != null
-                            ? const Color.fromARGB(255, 255, 17, 0)
-                            : Colors.black,
-                      ),
-                    )
+                    user != null
+                        ? const TranslatedText("Log out",
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 255, 17, 0)))
+                        : const TranslatedText(
+                            "Log in",
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          )
                   ],
                 ),
               ),
@@ -316,9 +317,9 @@ class _ProfilePageState extends State<ProfilePage> {
               width: MediaQuery.of(context).size.width,
               height: 40,
               child: ElevatedButton(
-                onPressed: user != null ?
-                () => _showRadioDialog() : 
-                () => showLoginPrompt(context),
+                onPressed: user != null
+                    ? () => _showRadioDialog()
+                    : () => showLoginPrompt(context),
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.resolveWith<Color>(
                     (Set<WidgetState> states) {
@@ -346,7 +347,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 child: const Row(
                   children: [
-                    SizedBox(width: 10,),
+                    SizedBox(
+                      width: 10,
+                    ),
                     Icon(Icons.language),
                     SizedBox(
                       width: 10,
@@ -388,7 +391,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 child: const Row(
                   children: [
-                    SizedBox(width: 10,),
+                    SizedBox(
+                      width: 10,
+                    ),
                     Icon(Icons.feedback),
                     SizedBox(
                       width: 10,
