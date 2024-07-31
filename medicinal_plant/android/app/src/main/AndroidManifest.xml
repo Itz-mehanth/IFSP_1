@@ -9,10 +9,11 @@
 
     <application
         android:label="medicinal_plant"
-        android:name="${applicationName}"
+        android:name="medicinal_plant"
         android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
-        android:usesClearTextTraffic="true">
+        >
         <activity
             android:name=".MainActivity"
             android:exported="true"

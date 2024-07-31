@@ -7,7 +7,8 @@ import 'package:medicinal_plant/google_signin.dart';
 import 'package:medicinal_plant/google_signin_web.dart';
 import 'package:medicinal_plant/home_page.dart';
 import 'package:medicinal_plant/login_register_page.dart';
-import 'package:flutter_app_restart/flutter_app_restart.dart';
+import 'package:medicinal_plant/splash_screen.dart';
+// import 'package:flutter_app_restart/flutter_app_restart.dart';
 import 'package:medicinal_plant/utils/global_functions.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -169,7 +170,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       });
                       _updateUserLanguage(locales[_selectedOption]);
                       Navigator.pop(context);
-                      await FlutterRestart.restartApp();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SplashScreen()));
                     },
                   );
                 }).toList(),
@@ -249,7 +253,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 onPressed: () {
                   if (user?.email != null) {
                     auth.signOut();
-                  }else if(authService.isLoggedIn) {
+                  } else if (authService.isLoggedIn) {
                     authService.signOut();
                   } else {
                     Navigator.push(
