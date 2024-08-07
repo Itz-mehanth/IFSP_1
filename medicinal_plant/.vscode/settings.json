@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "C:/Flutter projects/medicinal_plant/medicinal_plant/linux"
+    "cmake.sourceDirectory": "C:/Flutter projects/medicinal_plant/medicinal_plant/linux",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
