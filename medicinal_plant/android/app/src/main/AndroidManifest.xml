@@ -10,10 +10,16 @@
     <application
         android:usesCleartextTraffic="true"
         android:label="medicinal_plant"
-        android:name="${applicationName}"
+        android:name="medicinal_plant"
         android:icon="@mipmap/ic_launcher"
+<<<<<<< HEAD
         android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true">
+=======
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
+        >
+>>>>>>> 4672319b139f71216b57346d6f424e600ca1db9f
         <activity
             android:name=".MainActivity"
             android:exported="true"

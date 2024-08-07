@@ -37,8 +37,13 @@ final user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+<<<<<<< HEAD
       body: Container(
         color: Colors.white,
+=======
+      backgroundColor: Colors.white,  // Set background color to white
+      body: SizedBox(
+>>>>>>> 4672319b139f71216b57346d6f424e600ca1db9f
         height: double.infinity,
         width: MediaQuery.of(context).size.width,
         child: Center(

@@ -8,6 +8,10 @@ import 'package:medicinal_plant/google_signin_web.dart';
 import 'package:medicinal_plant/home_page.dart';
 import 'package:medicinal_plant/login_register_page.dart';
 import 'package:medicinal_plant/splash_screen.dart';
+<<<<<<< HEAD
+=======
+// import 'package:flutter_app_restart/flutter_app_restart.dart';
+>>>>>>> 4672319b139f71216b57346d6f424e600ca1db9f
 import 'package:medicinal_plant/utils/global_functions.dart';
 import 'package:url_launcher/url_launcher.dart';
 
